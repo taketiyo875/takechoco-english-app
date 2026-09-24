@@ -125,15 +125,21 @@
             grid-template-columns: 1fr;
             gap: 12px;
         }
-        .choice-btn {
-            background: #ffffff;
-            border: 2px solid #ddd;
-            padding: 14px;
-            font-size: 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            text-align: left;
-            transition: all 0.2s;
+    .choice-btn {
+    background: var(--primary-orange); 
+    color: white; 
+    border: 2px solid var(--dark-orange); 
+    padding: 14px; 
+    font-size: 16px; 
+    border-radius: 8px; 
+    cursor: pointer; 
+    text-align: left;
+    font-weight: bold;
+}
+.choice-btn:hover { 
+    background: var(--dark-orange); 
+    border-color: var(--dark-orange); 
+}
         }
         .choice-btn:hover {
             background: var(--light-orange);
