@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>英検3級 クイズシステム - パート 4/4</title>
+    <style>
+        :root {
+            --primary-orange: #FF8C00;
+            --light-orange: #FFF5EE;
+            --dark-orange: #E65C00;
+            --accent-orange: #FFD700;
+            --bg-color: #FAF9F6;
+            --text-color: #333333;
+        }
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        header {
+            background-color: var(--primary-orange);
+            color: white;
+            width: 100%;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .container {
+            max-width: 600px;
+            width: 90%;
+            background: white;
+            margin: 30px 0;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(255, 140, 0, 0.15);
+            border: 2px solid var(--primary-orange);
+            position: relative;
+        }
+        .cat-deco {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .cat-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid var(--primary-orange);
+            object-fit: cover;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .nav-links a {
+            color: var(--dark-orange);
+            text-decoration: none;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 5px;
+            background: var(--light-orange);
+            font-size: 14px;
+        }
+        .nav-links a.active {
+            background: var(--primary-orange);
+            color: white;
+        }
+        .setup-section, .quiz-section, .result-section {
+            display: none;
+        }
+        .active-section {
+            display: block;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 15px;
+        }
+        select, input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: var(--primary-orange);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background-color: var(--dark-orange);
+        }
+        .question-box {
+            font-size: 22px;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            color: var(--dark-orange);
+        }
+        .choices-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+        .choice-btn {
+            background: #ffffff;
+            border: 2px solid #ddd;
+            padding: 14px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+        }
+        .choice-btn:hover {
+            background: var(--light-orange);
+            border-color: var(--primary-orange);
+        }
+        .progress-bar-container {
+            width: 100%;
+            background-color: #eee;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary-orange);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        .score-display {
+            font-size: 24px;
+            text-align: center;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .feedback {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 15px 0;
+            min-height: 24px;
+        }
+        .correct-text { color: #28a745; }
+        .wrong-text { color: #dc3545; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🍊 英検単語トレーニングシステム 🍊</h1>
+        <p>楽しく学んで一発合格を目指そう！</p>
+    </header>
+
+    <div class="container">
+        <!-- お預かりした可愛いオレンジの猫ちゃん風デコレーション -->
+        <div class="cat-deco">
+            <svg width="80" height="80" viewBox="0 0 100 100" style="fill: var(--primary-orange);">
+                <circle cx="50" cy="55" r="35"/>
+                <polygon points="20,30 40,35 25,10"/>
+                <polygon points="80,30 60,35 75,10"/>
+                <circle cx="40" cy="50" r="4" fill="white"/>
+                <circle cx="60" cy="50" r="4" fill="white"/>
+                <circle cx="40" cy="50" r="2" fill="black"/>
+                <circle cx="60" cy="50" r="2" fill="black"/>
+                <path d="M 45 65 Q 50 70 55 65" stroke="black" stroke-width="2" fill="none"/>
+            </svg>
+            <p style="margin: 5px 0 0 0; font-weight: bold; color: var(--dark-orange);">「集中ニャ！応援してるニャ！」</p>
+        </div>
+
+        <!-- 4ファイル間のナビゲーション -->
+        <div class="nav-links">
+            <a href="eiken3rd_part1.html" class="">パート1 (1-500)</a>
+            <a href="eiken3rd_part2.html" class="">パート2 (501-1000)</a>
+            <a href="eiken3rd_part3.html" class="">パート3 (1001-1500)</a>
+            <a href="eiken3rd_part4.html" class="active">パート4 (1501-2000)</a>
+        </div>
+
+        <h2 style="text-align: center; color: var(--dark-orange);">英検3級 クイズ - パート 4</h2>
+
+        <!-- 設定画面 -->
+        <div id="setup-section" class="setup-section active-section">
+            <label for="difficulty">難易度（レベル）を選択：</label>
+            <select id="difficulty">
+                <option value="初級">初級 (Beginner)</option>
+                <option value="中級">中級 (Intermediate)</option>
+                <option value="上級">上級 (Advanced)</option>
+            </select>
+
+            <label for="q-count">出題問題数：</label>
+            <input type="number" id="q-count" value="10" min="1" max="100">
+
+            <button onclick="startQuiz()">クイズを始める 🐾</button>
+        </div>
+
+        <!-- クイズ画面 -->
+        <div id="quiz-section" class="quiz-section">
+            <div class="progress-bar-container">
+                <div id="progress-bar" class="progress-bar"> </div>
+            </div>
+            <div style="text-align: right; font-weight: bold;" id="question-number">0/0</div>
+            
+            <div id="question-box" class="question-box">word</div>
+            <div id="feedback" class="feedback"></div>
+            
+            <div id="choices-grid" class="choices-grid">
+                <!-- 選択肢がJavaScriptで生成されます -->
+            </div>
+        </div>
+
+        <!-- 結果画面 -->
+        <div id="result-section" class="result-section">
+            <h3 style="text-align: center;">結果発表</h3>
+            <div id="score-display" class="score-display">0 / 0問正解</div>
+            <p id="result-comment" style="text-align: center; font-weight: bold;"></p>
+            <button onclick="resetQuiz()">もう一度挑戦する</button>
+        </div>
+    </div>
+
+    <script>
+        // パートごとに500語のデータ構造を展開できるように設計
+        // ここではサンプルとして各難易度の基本セットを用意しています。
+        // 実際の2000語はここにオブジェクトを追加していくことで完全なデータベースになります。
+        const allWords = {"初級": [{"word": "apple", "meaning": "りんご", "choices": ["りんご", "みかん", "ぶどう", "バナナ"]}, {"word": "book", "meaning": "本", "choices": ["本", "ノート", "消しゴム", "鉛筆"]}, {"word": "cat", "meaning": "猫", "choices": ["猫", "犬", "鳥", "魚"]}, {"word": "dog", "meaning": "犬", "choices": ["犬", "猫", "ウサギ", "ライオン"]}, {"word": "school", "meaning": "学校", "choices": ["学校", "病院", "公園", "駅"]}], "中級": [{"word": "beautiful", "meaning": "美しい", "choices": ["美しい", "汚い", "新しい", "古い"]}, {"word": "challenge", "meaning": "挑戦する", "choices": ["挑戦する", "諦める", "逃げる", "休む"]}, {"word": "discover", "meaning": "発見する", "choices": ["発見する", "隠す", "失う", "忘れる"]}, {"word": "experience", "meaning": "経験", "choices": ["経験", "知識", "想像", "記憶"]}, {"word": "important", "meaning": "重要な", "choices": ["重要な", "簡単な", "危険な", "面白い"]}], "上級": [{"word": "environment", "meaning": "環境", "choices": ["環境", "社会", "経済", "文化"]}, {"word": "government", "meaning": "政府", "choices": ["政府", "企業", "学校", "警察"]}, {"word": "opportunity", "meaning": "機会", "choices": ["機会", "結果", "原因", "目的"]}, {"word": "responsible", "meaning": "責任がある", "choices": ["責任がある", "自由な", "安全な", "正しい"]}, {"word": "volunteer", "meaning": "ボランティア", "choices": ["ボランティア", "会社員", "公務員", "学生"]}]};
+
+        let currentQuestions = [];
+        let currentQuestionIdx = 0;
+        let score = 0;
+        let canAnswer = true;
+
+        function startQuiz() {
+            const diff = document.getElementById('difficulty').value;
+            let count = parseInt(document.getElementById('q-count').value) || 10;
+            
+            // 選択された難易度の単語プールからシャッフルして抽出
+            let pool = [...allWords[diff]];
+            if(pool.length === 0) {
+                alert('単語データがありません。');
+                return;
+            }
+            
+            // シャッフル
+            pool.sort(() => Math.random() - 0.5);
+            
+            // 指定問題数に切り出し
+            if(count > pool.length) count = pool.length;
+            currentQuestions = pool.slice(0, count);
+            
+            currentQuestionIdx = 0;
+            score = 0;
+            
+            document.getElementById('setup-section').classList.remove('active-section');
+            document.getElementById('quiz-section').classList.add('active-section');
+            
+            showQuestion();
+        }
+
+        function showQuestion() {
+            canAnswer = true;
+            document.getElementById('feedback').innerText = '';
+            
+            const q = currentQuestions[currentQuestionIdx];
+            document.getElementById('question-box').innerText = q.word;
+            document.getElementById('question-number').innerText = (currentQuestionIdx + 1) + '/' + currentQuestions.length;
+            
+            // 進捗バーの更新
+            const progressPercent = ((currentQuestionIdx) / currentQuestions.length) * 100;
+            document.getElementById('progress-bar').style.width = progressPercent + '%';
+
+            // 選択肢のシャッフル生成
+            const choices = [...q.choices];
+            choices.sort(() => Math.random() - 0.5);
+
+            const grid = document.getElementById('choices-grid');
+            grid.innerHTML = '';
+            
+            choices.forEach(choice => {
+                const btn = document.createElement('button');
+                btn.className = 'choice-btn';
+                btn.innerText = choice;
+                btn.onclick = () => selectChoice(choice, q.meaning, btn);
+                grid.appendChild(btn);
+            });
+        }
+
+        function selectChoice(selected, correct, element) {
+            if(!canAnswer) return;
+            canAnswer = false;
+
+            const feedback = document.getElementById('feedback');
+            if(selected === correct) {
+                score++;
+                feedback.innerText = '⭕️ 正解ニャ！';
+                feedback.className = 'feedback correct-text';
+                element.style.background = '#d4edda';
+                element.style.borderColor = '#28a745';
+            } else {
+                feedback.innerText = '❌ 残念、正解は「' + correct + '」ニャ。';
+                feedback.className = 'feedback wrong-text';
+                element.style.background = '#f8d7da';
+                element.style.borderColor = '#dc3545';
+            }
+
+            setTimeout(() => {
+                currentQuestionIdx++;
+                if(currentQuestionIdx < currentQuestions.length) {
+                    showQuestion();
+                } else {
+                    showResult();
+                }
+            }, 1500);
+        }
+
+        function showResult() {
+            document.getElementById('quiz-section').remove('active-section');
+            document.getElementById('quiz-section').style.display = 'none';
+            document.getElementById('result-section').classList.add('active-section');
+            
+            document.getElementById('score-display').innerText = currentQuestions.length + '問中 ' + score + '問正解！';
+            
+            const comment = document.getElementById('result-comment');
+            const rate = score / currentQuestions.length;
+            if(rate === 1) {
+                comment.innerText = 'パーフェクトニャ！素晴らしい！天才ニャ！🐾';
+            } else if(rate >= 0.7) {
+                comment.innerText = '合格圏内ニャ！その調子でがんばるニャ！🍊';
+            } else {
+                comment.innerText = '次はいけるニャ！復習してもう一回挑戦ニャ！';
+            }
+        }
+
+        function resetQuiz() {
+            document.getElementById('result-section').classList.remove('active-section');
+            document.getElementById('setup-section').classList.add('active-section');
+        }
+    </script>
+</body>
+</html>
